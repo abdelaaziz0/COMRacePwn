@@ -1,0 +1,12 @@
+# Build output
+/build/
+/build-*/
+/out/
+/dist/
+*.zip
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
