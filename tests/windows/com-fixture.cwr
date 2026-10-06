@@ -1,0 +1,54 @@
+{
+  "schema": "cwr.target.v1",
+  "id": "com-fixture-race",
+  "name": "Controlled out-of-process COM race fixture",
+  "description": "Disposable local-server fixture for exercising COM activation, oplocks, junction redirection, exact payload placement, and evidence collection under one user token.",
+  "variants": [
+    {
+      "id": "local-server",
+      "name": "Synthetic local COM server",
+      "product": "CWR test fixture",
+      "context": "same-user local server; test paths are restricted to the lab root",
+      "actions": {
+        "write": {
+          "name": "Controlled two-open file write",
+          "invoker": "idispatch",
+          "clsid": "{A67AA528-7B18-4B7A-92A4-18ED10263791}",
+          "method": "RaceWrite",
+          "vulnerability_pattern": "double_open_path_write",
+          "privileged_operation": "file_write",
+          "race_trigger": "oplock_on_source",
+          "bait_precreated": true,
+          "bait_kind": "file",
+          "swap_primitive": "junction_redirect",
+          "target_required": true,
+          "content": "CWR controlled fixture content",
+          "operation": {
+            "retry_safe": true,
+            "max_recommended_attempts": 5,
+            "side_effect_level": "controlled_lab_write",
+            "notes": "The server only copies a payload when both paths are beneath the per-run lab root."
+          },
+          "payload": {
+            "type": "file",
+            "preserve_bytes": true
+          },
+          "method_args": [
+            {
+              "name": "attacker_path",
+              "type": "path",
+              "value": "",
+              "attacker_controlled": true
+            },
+            {
+              "name": "payload_path",
+              "type": "path",
+              "value": "{payload_path}"
+            }
+          ],
+          "attacker_controlled_path_arg": 0
+        }
+      }
+    }
+  ]
+}
